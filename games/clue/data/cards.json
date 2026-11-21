@@ -1,0 +1,29 @@
+{
+  "suspects": [
+    { "id": "scarlett", "name_en": "Miss Scarlett", "name_ko": "스칼렛", "turn_order": 0 },
+    { "id": "mustard", "name_en": "Colonel Mustard", "name_ko": "머스터드", "turn_order": 1 },
+    { "id": "white", "name_en": "Mrs. White", "name_ko": "화이트", "turn_order": 2 },
+    { "id": "green", "name_en": "Mr. Green", "name_ko": "그린", "turn_order": 3 },
+    { "id": "peacock", "name_en": "Mrs. Peacock", "name_ko": "피콕", "turn_order": 4 },
+    { "id": "plum", "name_en": "Professor Plum", "name_ko": "플럼", "turn_order": 5 }
+  ],
+  "weapons": [
+    { "id": "candlestick", "name_en": "Candlestick", "name_ko": "촛대" },
+    { "id": "dagger", "name_en": "Dagger", "name_ko": "단검" },
+    { "id": "lead_pipe", "name_en": "Lead Pipe", "name_ko": "쇠파이프" },
+    { "id": "revolver", "name_en": "Revolver", "name_ko": "권총" },
+    { "id": "rope", "name_en": "Rope", "name_ko": "밧줄" },
+    { "id": "wrench", "name_en": "Wrench", "name_ko": "렌치" }
+  ],
+  "rooms": [
+    { "id": "kitchen", "name_en": "Kitchen", "name_ko": "부엌" },
+    { "id": "ballroom", "name_en": "Ballroom", "name_ko": "무도회장" },
+    { "id": "conservatory", "name_en": "Conservatory", "name_ko": "온실" },
+    { "id": "dining_room", "name_en": "Dining Room", "name_ko": "식당" },
+    { "id": "billiard_room", "name_en": "Billiard Room", "name_ko": "당구장" },
+    { "id": "library", "name_en": "Library", "name_ko": "도서관" },
+    { "id": "lounge", "name_en": "Lounge", "name_ko": "라운지" },
+    { "id": "hall", "name_en": "Hall", "name_ko": "홀" },
+    { "id": "study", "name_en": "Study", "name_ko": "서재" }
+  ]
+}

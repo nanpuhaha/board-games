@@ -1,0 +1,19 @@
+[project]
+name = "board-games-spec"
+version = "0.1.0"
+description = "Agent-first language-agnostic board game rule specifications with Python reference engines and conformance tests."
+requires-python = ">=3.12"
+dependencies = [
+    "jsonschema>=4.20",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["games"]
+python_files = ["test_*.py"]

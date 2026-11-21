@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://board-games.local/schemas/conformance.schema.json",
+  "title": "Language-Agnostic Conformance Test Suite",
+  "type": "object",
+  "required": ["game", "suite", "cases"],
+  "properties": {
+    "game": { "type": "string" },
+    "suite": { "type": "string" },
+    "description": { "type": "string" },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "given", "then"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "description": { "type": "string" },
+          "given": {
+            "type": "object",
+            "description": "Full or base GameState snapshot"
+          },
+          "when": {
+            "type": "object",
+            "required": ["type"],
+            "description": "Action to apply. Omit when testing get_player_view or get_outcome directly."
+          },
+          "view_as": {
+            "type": "string",
+            "description": "Optional player_id to inspect via get_player_view(state, player_id)"
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "description": "Expected RuleError code"
+              },
+              "state_subset": {
+                "type": "object",
+                "description": "Partial dict that must match the resulting state recursively"
+              },
+              "events_contain": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["type"],
+                  "properties": {
+                    "type": { "type": "string" },
+                    "visibility": { "type": "string", "enum": ["public", "private", "hidden"] },
+                    "recipients": { "type": "array", "items": { "type": "string" } },
+                    "payload": { "type": "object" }
+                  }
+                }
+              },
+              "view_subset": {
+                "type": "object",
+                "description": "Partial dict that must match get_player_view result"
+              },
+              "view_absent_keys": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Top-level keys that must NOT exist in get_player_view result"
+              },
+              "outcome": {
+                "type": ["object", "null"]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

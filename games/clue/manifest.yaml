@@ -1,0 +1,51 @@
+id: clue
+name:
+  en: Clue (Cluedo)
+  ko: 클루 (클래식 + 물음표 보너스 카드)
+spec_version: "1.0.0"
+edition: Classic (with Question Mark Bonus Cards)
+players:
+  min: 3
+  max: 6
+  recommended: [4, 5]
+mechanics:
+  - deduction
+  - grid-movement
+  - roll-and-move
+  - hidden-information
+  - player-elimination
+features:
+  hidden_information: true
+  randomness: true
+  domain_events: true
+config_options:
+  enable_bonus_cards:
+    type: boolean
+    default: true
+    description: "보드 위 물음표(?) 칸 착지 시 보너스 카드를 뽑는 규칙 활성화 여부"
+  accusation_requires_room:
+    type: boolean
+    default: false
+    description: "true일 경우 방 안에서만 최종 추리(Accusation) 가능, false(클래식)일 경우 내 턴 아무 때나 가능"
+spec_files:
+  - spec/01-overview.md
+  - spec/02-state-model.md
+  - spec/03-setup.md
+  - spec/04-turn-flow.md
+  - spec/05-actions.md
+  - spec/06-scoring-and-end.md
+  - spec/07-edge-cases.md
+  - spec/08-domain-events.md
+data_files:
+  - data/cards.json
+  - data/board.json
+  - data/bonus-cards.json
+conformance_tests:
+  - tests/conformance/01-movement-and-passages.json
+  - tests/conformance/02-suggestion-and-disprove.json
+  - tests/conformance/03-bonus-cards.json
+  - tests/conformance/04-accusation-and-elimination.json
+  - tests/conformance/05-visibility-and-errors.json
+reference_engine:
+  language: python
+  module: games.clue.reference.engine

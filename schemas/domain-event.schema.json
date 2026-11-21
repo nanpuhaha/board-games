@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://board-games.local/schemas/domain-event.schema.json",
+  "title": "Domain Event",
+  "type": "object",
+  "required": ["type", "visibility", "payload"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_]+$"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": ["public", "private", "hidden"]
+    },
+    "recipients": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "visibility": { "const": "private" } }
+      },
+      "then": {
+        "required": ["recipients"],
+        "properties": {
+          "recipients": { "minItems": 1 }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

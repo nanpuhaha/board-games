@@ -1,0 +1,110 @@
+{
+  "deck_name": "question_mark_bonus_cards",
+  "recycle_policy": "bottom_of_deck",
+  "cards": [
+    {
+      "id": "bonus_teleport_1",
+      "effect": "teleport_any_room",
+      "name_ko": "비밀 이동",
+      "name_en": "Teleport to Any Room",
+      "description": "원하는 방으로 즉시 이동한다. 이동 후 추리를 진행할 수 있다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_teleport_2",
+      "effect": "teleport_any_room",
+      "name_ko": "비밀 이동",
+      "name_en": "Teleport to Any Room",
+      "description": "원하는 방으로 즉시 이동한다. 이동 후 추리를 진행할 수 있다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_extra_turn_1",
+      "effect": "extra_turn",
+      "name_ko": "한 번 더 차례",
+      "name_en": "Extra Turn",
+      "description": "현재 차례가 끝난 뒤 한 번 더 자신의 차례를 진행한다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_extra_turn_2",
+      "effect": "extra_turn",
+      "name_ko": "한 번 더 차례",
+      "name_en": "Extra Turn",
+      "description": "현재 차례가 끝난 뒤 한 번 더 자신의 차례를 진행한다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_free_suggestion_1",
+      "effect": "free_suggestion",
+      "name_ko": "원격 추리",
+      "name_en": "Free Suggestion",
+      "description": "현재 위치와 관계없이 원하는 방·용의자·도구를 지목해 즉시 추리를 진행한다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_free_suggestion_2",
+      "effect": "free_suggestion",
+      "name_ko": "원격 추리",
+      "name_en": "Free Suggestion",
+      "description": "현재 위치와 관계없이 원하는 방·용의자·도구를 지목해 즉시 추리를 진행한다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_move_plus_6_1",
+      "effect": "bonus_move",
+      "name_ko": "추가 이동 +6",
+      "name_en": "Bonus Move +6",
+      "description": "즉시 최대 6칸까지 추가 이동한다. 이 이동으로 방에 들어가면 추리할 수 있다.",
+      "params": { "steps": 6 }
+    },
+    {
+      "id": "bonus_move_plus_6_2",
+      "effect": "bonus_move",
+      "name_ko": "추가 이동 +6",
+      "name_en": "Bonus Move +6",
+      "description": "즉시 최대 6칸까지 추가 이동한다. 이 이동으로 방에 들어가면 추리할 수 있다.",
+      "params": { "steps": 6 }
+    },
+    {
+      "id": "bonus_peek_opponent_1",
+      "effect": "peek_opponent_card",
+      "name_ko": "상대 카드 엿보기",
+      "name_en": "Peek Opponent Card",
+      "description": "다른 플레이어 1명을 지목한다. 지목된 플레이어는 손패 중 1장을 선택해 나에게만 비공개로 보여준다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_peek_opponent_2",
+      "effect": "peek_opponent_card",
+      "name_ko": "상대 카드 엿보기",
+      "name_en": "Peek Opponent Card",
+      "description": "다른 플레이어 1명을 지목한다. 지목된 플레이어는 손패 중 1장을 선택해 나에게만 비공개로 보여준다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_peek_left_1",
+      "effect": "peek_left_card",
+      "name_ko": "왼쪽 플레이어 카드 확인",
+      "name_en": "Peek Left Player Card",
+      "description": "시계 방향 다음 플레이어가 손패 중 1장을 선택해 나에게만 비공개로 보여준다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_public_reveal_1",
+      "effect": "force_public_reveal",
+      "name_ko": "강제 공개",
+      "name_en": "Force Public Reveal",
+      "description": "다른 플레이어 1명을 지목한다. 지목된 플레이어는 손패 중 1장을 선택해 모든 플레이어에게 공개한다.",
+      "params": {}
+    },
+    {
+      "id": "bonus_swap_position_1",
+      "effect": "swap_position",
+      "name_ko": "위치 교환",
+      "name_en": "Swap Position",
+      "description": "다른 플레이어 1명과 보드 상의 위치를 즉시 교환한다. 방으로 이동하게 되면 추리할 수 있다.",
+      "params": {}
+    }
+  ]
+}

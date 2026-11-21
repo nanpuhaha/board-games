@@ -1,0 +1,232 @@
+{
+  "game": "clue",
+  "suite": "movement-and-passages",
+  "description": "Dice rolling, hallway/room movement, secret passages, and stay-after-pull rules",
+  "cases": [
+    {
+      "id": "roll-dice-deterministic",
+      "description": "ROLL_DICE with dice_override sets movement_remaining and transitions to MOVE",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 123,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "TURN_START",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "hallway", "x": 7, "y": 24 },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": ["bonus_extra_turn_1"],
+        "dice": null,
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "ROLL_DICE", "player": "p1", "dice_override": [3, 4] },
+      "then": {
+        "state_subset": {
+          "phase": "MOVE",
+          "dice": [3, 4],
+          "movement_remaining": 7
+        },
+        "events_contain": [
+          { "type": "DICE_ROLLED", "visibility": "public", "payload": { "player": "p1", "dice": [3, 4], "total": 7 } }
+        ]
+      }
+    },
+    {
+      "id": "move-to-room-through-doorway",
+      "description": "Player enters kitchen via doorway (4,7) without needing exact roll",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 123,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "MOVE",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "hallway", "x": 5, "y": 7 },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": ["bonus_extra_turn_1"],
+        "dice": [2, 3],
+        "movement_remaining": 5,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "MOVE_TO_ROOM", "player": "p1", "room": "kitchen" },
+      "then": {
+        "state_subset": {
+          "phase": "POST_MOVE",
+          "movement_remaining": 0,
+          "tokens": {
+            "scarlett": { "kind": "room", "room": "kitchen" }
+          }
+        },
+        "events_contain": [
+          { "type": "TOKEN_MOVED", "visibility": "public", "payload": { "suspect": "scarlett", "to": { "kind": "room", "room": "kitchen" }, "reason": "move" } }
+        ]
+      }
+    },
+    {
+      "id": "use-secret-passage-kitchen-to-study",
+      "description": "Player in kitchen uses secret passage to study without rolling",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 123,
+        "turn_number": 2,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "TURN_START",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": ["bonus_extra_turn_1"],
+        "dice": null,
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "USE_SECRET_PASSAGE", "player": "p1" },
+      "then": {
+        "state_subset": {
+          "phase": "POST_MOVE",
+          "tokens": {
+            "scarlett": { "kind": "room", "room": "study" }
+          }
+        },
+        "events_contain": [
+          { "type": "SECRET_PASSAGE_USED", "visibility": "public", "payload": { "player": "p1", "from_room": "kitchen", "to_room": "study" } }
+        ]
+      }
+    },
+    {
+      "id": "secret-passage-denied-in-hall",
+      "description": "USE_SECRET_PASSAGE in a room without passage raises NO_SECRET_PASSAGE",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 123,
+        "turn_number": 2,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "TURN_START",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "hall" },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": null,
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "USE_SECRET_PASSAGE", "player": "p1" },
+      "then": { "error": "NO_SECRET_PASSAGE" }
+    },
+    {
+      "id": "stay-for-suggestion-when-pulled",
+      "description": "Pulled player can stay in room without rolling",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 123,
+        "turn_number": 3,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 1,
+        "phase": "TURN_START",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": true },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "room", "room": "kitchen" },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": null,
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "STAY_FOR_SUGGESTION", "player": "p2" },
+      "then": {
+        "state_subset": {
+          "phase": "POST_MOVE",
+          "players": {
+            "p2": { "pulled_into_room": false }
+          }
+        },
+        "events_contain": [
+          { "type": "STAYED_IN_ROOM", "visibility": "public", "payload": { "player": "p2", "room": "kitchen" } }
+        ]
+      }
+    }
+  ]
+}

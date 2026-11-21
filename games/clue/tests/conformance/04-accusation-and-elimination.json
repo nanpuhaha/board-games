@@ -1,0 +1,153 @@
+{
+  "game": "clue",
+  "suite": "accusation-and-elimination",
+  "description": "Winning accusation, wrong accusation elimination, extra-turn cancellation, and all-eliminated end state",
+  "cases": [
+    {
+      "id": "correct-accusation-wins-game",
+      "description": "Matching all 3 envelope cards immediately ends game with winner",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 5,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "POST_SUGGESTION",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": [2, 3],
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "MAKE_ACCUSATION", "player": "p1", "suspect": "plum", "weapon": "candlestick", "room": "study" },
+      "then": {
+        "state_subset": {
+          "phase": "GAME_OVER"
+        },
+        "outcome": {
+          "winner": "p1",
+          "reason": "CORRECT_ACCUSATION",
+          "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" }
+        },
+        "events_contain": [
+          { "type": "ACCUSATION_MADE", "visibility": "public", "payload": { "player": "p1", "correct": true } },
+          { "type": "GAME_ENDED", "visibility": "public", "payload": { "winner": "p1", "reason": "CORRECT_ACCUSATION" } }
+        ]
+      }
+    },
+    {
+      "id": "wrong-accusation-eliminates-and-cancels-extra-turn",
+      "description": "Wrong accusation marks player eliminated, cancels extra_turn_pending, and advances turn",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 5,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "POST_MOVE",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": [2, 3],
+        "movement_remaining": 0,
+        "extra_turn_pending": true,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "MAKE_ACCUSATION", "player": "p1", "suspect": "green", "weapon": "candlestick", "room": "study" },
+      "then": {
+        "state_subset": {
+          "phase": "TURN_START",
+          "current_player_index": 1,
+          "extra_turn_pending": false,
+          "players": {
+            "p1": { "eliminated": true }
+          }
+        },
+        "outcome": null,
+        "events_contain": [
+          { "type": "PLAYER_ELIMINATED", "visibility": "public", "payload": { "player": "p1" } },
+          { "type": "TURN_STARTED", "visibility": "public", "payload": { "player": "p2" } }
+        ]
+      }
+    },
+    {
+      "id": "last-player-wrong-accusation-ends-with-no-winner",
+      "description": "When the last surviving player accuses wrongly, game ends with ALL_ELIMINATED and winner null",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 9,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 2,
+        "phase": "TURN_START",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": true, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": true, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": null,
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "MAKE_ACCUSATION", "player": "p3", "suspect": "green", "weapon": "rope", "room": "hall" },
+      "then": {
+        "state_subset": {
+          "phase": "GAME_OVER"
+        },
+        "outcome": {
+          "winner": null,
+          "reason": "ALL_ELIMINATED"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "game": "clue",
+  "suite": "visibility-and-errors",
+  "description": "Hidden information masking in get_player_view and turn/game-over error enforcement",
+  "cases": [
+    {
+      "id": "player-view-hides-envelope-deck-and-opponent-hands",
+      "description": "get_player_view exposes own hand and opponent hand_count, but strips envelope, bonus_deck, and rng_state",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 999,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "TURN_START",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope", "hall"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "hallway", "x": 7, "y": 24 },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": ["bonus_extra_turn_1", "bonus_teleport_1"],
+        "dice": null,
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "view_as": "p1",
+      "then": {
+        "view_absent_keys": ["envelope", "bonus_deck", "rng_state"],
+        "view_subset": {
+          "bonus_deck_count": 2,
+          "players": {
+            "p1": { "hand": ["rope", "hall"], "hand_count": 2 },
+            "p2": { "hand_count": 1 }
+          }
+        }
+      }
+    },
+    {
+      "id": "out-of-turn-action-rejected",
+      "description": "Non-active player cannot roll dice",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "TURN_START",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "hallway", "x": 7, "y": 24 },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": null,
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "ROLL_DICE", "player": "p2" },
+      "then": { "error": "NOT_YOUR_TURN" }
+    },
+    {
+      "id": "action-after-game-over-rejected",
+      "description": "Any action in GAME_OVER phase raises GAME_ALREADY_OVER",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 10,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "GAME_OVER",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "study" },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": null,
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": { "winner": "p1", "reason": "CORRECT_ACCUSATION", "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" } }
+      },
+      "when": { "type": "END_TURN", "player": "p1" },
+      "then": { "error": "GAME_ALREADY_OVER" }
+    }
+  ]
+}

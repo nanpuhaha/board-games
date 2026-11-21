@@ -1,0 +1,32 @@
+id: game-slug
+name:
+  en: Game Title
+  ko: 게임 제목
+spec_version: "1.0.0"
+edition: Classic
+players:
+  min: 2
+  max: 4
+  recommended: [3, 4]
+mechanics:
+  - example-mechanic
+features:
+  hidden_information: true
+  randomness: true
+  domain_events: true
+config_options: {}
+spec_files:
+  - spec/01-overview.md
+  - spec/02-state-model.md
+  - spec/03-setup.md
+  - spec/04-turn-flow.md
+  - spec/05-actions.md
+  - spec/06-scoring-and-end.md
+  - spec/07-edge-cases.md
+  - spec/08-domain-events.md
+data_files: []
+conformance_tests:
+  - tests/conformance/01-basic.json
+reference_engine:
+  language: python
+  module: games.game_slug.reference.engine

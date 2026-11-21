@@ -1,0 +1,91 @@
+{
+  "width": 24,
+  "height": 25,
+  "legend": {
+    ".": "hallway",
+    "?": "question_mark_hallway",
+    "X": "out_of_bounds_or_cellar",
+    "K": "kitchen",
+    "B": "ballroom",
+    "C": "conservatory",
+    "D": "dining_room",
+    "I": "billiard_room",
+    "L": "library",
+    "O": "lounge",
+    "H": "hall",
+    "S": "study"
+  },
+  "grid": [
+    "XXXXXXXXX.XXXX.XXXXXXXXX",
+    "KKKKKK....BBBB....CCCCCC",
+    "KKKKKK..BBBBBBBB..CCCCCC",
+    "KKKKKK..BBBBBBBB..CCCCCC",
+    "KKKKKK..BBBBBBBB..CCCCCC",
+    "KKKKKK..BBBBBBBB..CCCCCC",
+    "KKKKKK..BBBBBBBB..?.....",
+    ".?......BBBBBBBB........",
+    "........BBBBBBBB..IIIIII",
+    "DDDDD.............IIIIII",
+    "DDDDDDDD..XXXXX...IIIIII",
+    "DDDDDDDD..XXXXX..?IIIIII",
+    "DDDDDDDD..XXXXX...IIIIII",
+    "DDDDDDDD..XXXXX.........",
+    "DDDDDDDD..XXXXX...LLLLLL",
+    "DDDDDDDD..XXXXX..LLLLLLL",
+    ".?........XXXXX..LLLLLLL",
+    "..........XXXXX..LLLLLLL",
+    "........?........LLLLLLL",
+    "OOOOOOO..HHHHHH........X",
+    "OOOOOOO..HHHHHH........?",
+    "OOOOOOO..HHHHHH..SSSSSSS",
+    "OOOOOOO..HHHHHH..SSSSSSS",
+    "OOOOOOO..HHHHHH..SSSSSSS",
+    "XXXXXXX.XXXXXXXXXXXXXXXX"
+  ],
+  "start_positions": {
+    "scarlett": [7, 24],
+    "mustard": [0, 17],
+    "white": [9, 0],
+    "green": [14, 0],
+    "peacock": [23, 6],
+    "plum": [22, 19]
+  },
+  "rooms": {
+    "kitchen": {
+      "doorways": [[4, 7]],
+      "secret_passage_to": "study"
+    },
+    "ballroom": {
+      "doorways": [[7, 5], [9, 9], [14, 9], [16, 5]],
+      "secret_passage_to": null
+    },
+    "conservatory": {
+      "doorways": [[17, 5]],
+      "secret_passage_to": "lounge"
+    },
+    "dining_room": {
+      "doorways": [[8, 12], [6, 16]],
+      "secret_passage_to": null
+    },
+    "billiard_room": {
+      "doorways": [[17, 9], [22, 13]],
+      "secret_passage_to": null
+    },
+    "library": {
+      "doorways": [[20, 13], [16, 16]],
+      "secret_passage_to": null
+    },
+    "lounge": {
+      "doorways": [[6, 18]],
+      "secret_passage_to": "conservatory"
+    },
+    "hall": {
+      "doorways": [[11, 18], [12, 18], [15, 20]],
+      "secret_passage_to": null
+    },
+    "study": {
+      "doorways": [[17, 20]],
+      "secret_passage_to": "kitchen"
+    }
+  }
+}

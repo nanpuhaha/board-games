@@ -1,0 +1,321 @@
+{
+  "game": "clue",
+  "suite": "suggestion-and-disprove",
+  "description": "Suggestion summoning, clockwise disproving, private card reveal, and mandatory disprove enforcement",
+  "cases": [
+    {
+      "id": "make-suggestion-pulls-suspect-and-weapon",
+      "description": "MAKE_SUGGESTION moves suspect and weapon into room and marks pulled_into_room",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "POST_MOVE",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["kitchen"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "hall", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": [2, 2],
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": null,
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "MAKE_SUGGESTION", "player": "p1", "suspect": "mustard", "weapon": "candlestick" },
+      "then": {
+        "state_subset": {
+          "phase": "DISPROVE",
+          "tokens": {
+            "mustard": { "kind": "room", "room": "kitchen" }
+          },
+          "weapons": {
+            "candlestick": "kitchen"
+          },
+          "players": {
+            "p2": { "pulled_into_room": true }
+          },
+          "pending_suggestion": {
+            "suggester": "p1",
+            "suspect": "mustard",
+            "weapon": "candlestick",
+            "room": "kitchen",
+            "responder_queue": ["p2", "p3"],
+            "current_responder_index": 0
+          }
+        },
+        "events_contain": [
+          { "type": "SUGGESTION_MADE", "visibility": "public", "payload": { "suggester": "p1", "suspect": "mustard", "weapon": "candlestick", "room": "kitchen" } }
+        ]
+      }
+    },
+    {
+      "id": "pass-disprove-advances-to-next-responder",
+      "description": "Responder without matching cards passes clockwise to p3",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "DISPROVE",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": true },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["kitchen"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "room", "room": "kitchen" },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": [2, 2],
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": {
+          "suggester": "p1",
+          "suspect": "mustard",
+          "weapon": "candlestick",
+          "room": "kitchen",
+          "responder_queue": ["p2", "p3"],
+          "current_responder_index": 0,
+          "from_bonus_card": false
+        },
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "PASS_DISPROVE", "player": "p2" },
+      "then": {
+        "state_subset": {
+          "phase": "DISPROVE",
+          "pending_suggestion": {
+            "current_responder_index": 1
+          }
+        },
+        "events_contain": [
+          { "type": "DISPROVE_PASSED", "visibility": "public", "payload": { "player": "p2" } }
+        ]
+      }
+    },
+    {
+      "id": "cannot-pass-when-holding-matching-card",
+      "description": "Responder holding a matching card cannot PASS_DISPROVE",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "DISPROVE",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": true },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["kitchen"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "room", "room": "kitchen" },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": [2, 2],
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": {
+          "suggester": "p1",
+          "suspect": "mustard",
+          "weapon": "candlestick",
+          "room": "kitchen",
+          "responder_queue": ["p2", "p3"],
+          "current_responder_index": 1,
+          "from_bonus_card": false
+        },
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "PASS_DISPROVE", "player": "p3" },
+      "then": { "error": "MUST_DISPROVE" }
+    },
+    {
+      "id": "show-disprove-card-emits-public-and-private-events",
+      "description": "SHOW_DISPROVE_CARD emits public disprover notice and private card event to suggester+disprover only",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "DISPROVE",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": true },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["kitchen"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "room", "room": "kitchen" },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": [2, 2],
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": {
+          "suggester": "p1",
+          "suspect": "mustard",
+          "weapon": "candlestick",
+          "room": "kitchen",
+          "responder_queue": ["p2", "p3"],
+          "current_responder_index": 1,
+          "from_bonus_card": false
+        },
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "SHOW_DISPROVE_CARD", "player": "p3", "card": "kitchen" },
+      "then": {
+        "state_subset": {
+          "phase": "POST_SUGGESTION",
+          "pending_suggestion": null
+        },
+        "events_contain": [
+          { "type": "SUGGESTION_DISPROVED", "visibility": "public", "payload": { "suggester": "p1", "disprover": "p3" } },
+          { "type": "CARD_SHOWN_PRIVATELY", "visibility": "private", "recipients": ["p1", "p3"], "payload": { "from_player": "p3", "to_player": "p1", "card": "kitchen" } }
+        ]
+      }
+    },
+    {
+      "id": "all-responders-pass-emits-undisproved",
+      "description": "When the last responder passes, phase becomes POST_SUGGESTION and SUGGESTION_UNDISPROVED is emitted",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "DISPROVE",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "study" },
+          "mustard": { "kind": "hallway", "x": 0, "y": 17 },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "room", "room": "study" }
+        },
+        "weapons": { "candlestick": "study", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": [2, 2],
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": {
+          "suggester": "p1",
+          "suspect": "plum",
+          "weapon": "candlestick",
+          "room": "study",
+          "responder_queue": ["p2", "p3"],
+          "current_responder_index": 1,
+          "from_bonus_card": false
+        },
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "PASS_DISPROVE", "player": "p3" },
+      "then": {
+        "state_subset": {
+          "phase": "POST_SUGGESTION",
+          "pending_suggestion": null
+        },
+        "events_contain": [
+          { "type": "DISPROVE_PASSED", "visibility": "public", "payload": { "player": "p3" } },
+          { "type": "SUGGESTION_UNDISPROVED", "visibility": "public", "payload": { "suggester": "p1" } }
+        ]
+      }
+    },
+    {
+      "id": "invalid-disprove-card-rejected",
+      "description": "Showing a card in hand that was not part of the suggestion raises INVALID_DISPROVE_CARD",
+      "given": {
+        "config": { "enable_bonus_cards": true, "accusation_requires_room": false },
+        "rng_state": 1,
+        "turn_number": 1,
+        "turn_order": ["p1", "p2", "p3"],
+        "current_player_index": 0,
+        "phase": "DISPROVE",
+        "players": {
+          "p1": { "id": "p1", "suspect": "scarlett", "hand": ["rope"], "eliminated": false, "pulled_into_room": false },
+          "p2": { "id": "p2", "suspect": "mustard", "hand": ["dagger", "kitchen"], "eliminated": false, "pulled_into_room": false },
+          "p3": { "id": "p3", "suspect": "white", "hand": ["wrench"], "eliminated": false, "pulled_into_room": false }
+        },
+        "tokens": {
+          "scarlett": { "kind": "room", "room": "kitchen" },
+          "mustard": { "kind": "room", "room": "kitchen" },
+          "white": { "kind": "hallway", "x": 9, "y": 0 },
+          "green": { "kind": "hallway", "x": 14, "y": 0 },
+          "peacock": { "kind": "hallway", "x": 23, "y": 6 },
+          "plum": { "kind": "hallway", "x": 22, "y": 19 }
+        },
+        "weapons": { "candlestick": "kitchen", "dagger": "ballroom", "lead_pipe": "conservatory", "revolver": "dining_room", "rope": "billiard_room", "wrench": "library" },
+        "envelope": { "suspect": "plum", "weapon": "candlestick", "room": "study" },
+        "bonus_deck": [],
+        "dice": [2, 2],
+        "movement_remaining": 0,
+        "extra_turn_pending": false,
+        "pending_suggestion": {
+          "suggester": "p1",
+          "suspect": "mustard",
+          "weapon": "candlestick",
+          "room": "kitchen",
+          "responder_queue": ["p2", "p3"],
+          "current_responder_index": 0,
+          "from_bonus_card": false
+        },
+        "pending_bonus": null,
+        "public_revealed_cards": [],
+        "outcome": null
+      },
+      "when": { "type": "SHOW_DISPROVE_CARD", "player": "p2", "card": "dagger" },
+      "then": { "error": "INVALID_DISPROVE_CARD" }
+    }
+  ]
+}
