@@ -1,0 +1,45 @@
+id: splendor
+name:
+  en: Splendor
+  ko: 스플렌더
+spec_version: "1.0.0"
+edition: Classic
+players:
+  min: 2
+  max: 4
+  recommended: [2, 3, 4]
+mechanics:
+  - engine-building
+  - set-collection
+  - open-drafting
+  - hidden-information
+features:
+  hidden_information: true
+  randomness: true
+  domain_events: true
+config_options:
+  target_points:
+    type: integer
+    default: 15
+    description: "마지막 라운드를 트리거하는 목표 명성 점수 (기본 15점)"
+spec_files:
+  - spec/01-overview.md
+  - spec/02-state-model.md
+  - spec/03-setup.md
+  - spec/04-turn-flow.md
+  - spec/05-actions.md
+  - spec/06-scoring-and-end.md
+  - spec/07-edge-cases.md
+  - spec/08-domain-events.md
+data_files:
+  - data/cards.json
+  - data/nobles.json
+  - data/setup-tables.json
+conformance_tests:
+  - tests/conformance/01-tokens-and-discard.json
+  - tests/conformance/02-reserve-and-visibility.json
+  - tests/conformance/03-buy-and-nobles.json
+  - tests/conformance/04-endgame-and-tiebreaker.json
+reference_engine:
+  language: python
+  module: games.splendor.reference.engine

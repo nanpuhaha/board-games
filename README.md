@@ -27,6 +27,7 @@ board-games/
 | 게임 | 슬러그 | 인원 | 상태 | 비고 |
 |---|---|---|---|---|
 | **Clue (클루)** | [`clue`](games/clue/manifest.yaml) | 3–6인 | 구현·검증 완료 | 클래식 기준 + 물음표(`?`) 보너스 카드 포함 |
+| **Splendor (스플렌더)** | [`splendor`](games/splendor/manifest.yaml) | 2–4인 | 구현·검증 완료 | 클래식 90장 카드·10명 귀족·비공개 예약 마스킹 포함 |
 
 ## 빠른 시작
 

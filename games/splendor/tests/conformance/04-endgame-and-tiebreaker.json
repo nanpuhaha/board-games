@@ -1,0 +1,73 @@
+{
+  "game": "splendor",
+  "suite": "endgame-and-tiebreaker",
+  "description": "Final round trigger, equal turns for all players, fewest-cards tiebreaker, and shared victory",
+  "cases": [
+    {
+      "id": "reaching-15-on-first-player-triggers-final-round-not-game-over",
+      "description": "When p1 reaches 15 points, final_round becomes true and p2 still gets their final turn",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 21,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": [], "2": [], "3": [] },
+        "market": { "1": ["t1_08"], "2": [], "3": [] },
+        "nobles": [],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 4, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": ["t3_01", "t3_02", "t3_03", "t2_06"], "reserved": [], "nobles": [], "points": 14 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": ["t3_04", "t3_05", "t3_06"], "reserved": [], "nobles": [], "points": 14 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "BUY_CARD", "player": "p1", "source": "market", "card_id": "t1_08" },
+      "then": {
+        "state_subset": {
+          "phase": "MAIN_ACTION",
+          "current_player_index": 1,
+          "final_round": true,
+          "players": { "p1": { "points": 15 } }
+        },
+        "outcome": null,
+        "events_contain": [
+          { "type": "FINAL_ROUND_TRIGGERED", "visibility": "public", "payload": { "triggered_by": "p1", "points": 15 } }
+        ]
+      }
+    },
+    {
+      "id": "tiebreaker-fewest-purchased-cards-wins",
+      "description": "When p1 and p2 tie at 15 points after final round, p2 wins with fewer purchased cards (4 vs 5)",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 22,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 1,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": [], "2": [], "3": [] },
+        "market": { "1": ["t1_16"], "2": [], "3": [] },
+        "nobles": [],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": ["t3_01", "t3_02", "t3_03", "t2_06", "t1_08"], "reserved": [], "nobles": [], "points": 15 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 4, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": ["t3_04", "t3_05", "t3_06"], "reserved": [], "nobles": [], "points": 14 }
+        },
+        "final_round": true,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "BUY_CARD", "player": "p2", "source": "market", "card_id": "t1_16" },
+      "then": {
+        "state_subset": { "phase": "GAME_OVER" },
+        "outcome": {
+          "winner": "p2",
+          "winners": ["p2"],
+          "reason": "FINAL_ROUND_COMPLETED"
+        }
+      }
+    }
+  ]
+}

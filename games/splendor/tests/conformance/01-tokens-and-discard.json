@@ -1,0 +1,165 @@
+{
+  "game": "splendor",
+  "suite": "tokens-and-discard",
+  "description": "Gem taking rules (3 distinct, 2 same >=4 rule, scarce bank) and 10-token discard limit",
+  "cases": [
+    {
+      "id": "take-three-distinct-gems",
+      "description": "TAKE_THREE_GEMS transfers 1 of each selected color and advances turn",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 1,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": ["t1_05"], "2": ["t2_05"], "3": ["t3_05"] },
+        "market": { "1": ["t1_01", "t1_02", "t1_03", "t1_04"], "2": ["t2_01", "t2_02", "t2_03", "t2_04"], "3": ["t3_01", "t3_02", "t3_03", "t3_04"] },
+        "nobles": ["noble_01", "noble_02", "noble_03"],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "TAKE_THREE_GEMS", "player": "p1", "gems": ["diamond", "sapphire", "emerald"] },
+      "then": {
+        "state_subset": {
+          "current_player_index": 1,
+          "turn_number": 2,
+          "bank": { "diamond": 3, "sapphire": 3, "emerald": 3 },
+          "players": {
+            "p1": { "tokens": { "diamond": 1, "sapphire": 1, "emerald": 1 } }
+          }
+        },
+        "events_contain": [
+          { "type": "TOKENS_TAKEN", "visibility": "public", "payload": { "player": "p1", "tokens": { "diamond": 1, "sapphire": 1, "emerald": 1 } } }
+        ]
+      }
+    },
+    {
+      "id": "take-two-same-gem-requires-four-in-bank",
+      "description": "TAKE_TWO_SAME_GEM is rejected when bank has only 3 of that color",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 1,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 3, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": [], "2": [], "3": [] },
+        "market": { "1": ["t1_01"], "2": ["t2_01"], "3": ["t3_01"] },
+        "nobles": ["noble_01"],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "TAKE_TWO_SAME_GEM", "player": "p1", "gem": "diamond" },
+      "then": { "error": "INSUFFICIENT_BANK_TOKENS" }
+    },
+    {
+      "id": "exceeding-ten-tokens-triggers-discard-phase",
+      "description": "Taking 3 gems when holding 9 transitions to DISCARD_TOKENS phase",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 5,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": [], "2": [], "3": [] },
+        "market": { "1": ["t1_01"], "2": ["t2_01"], "3": ["t3_01"] },
+        "nobles": ["noble_01"],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 2, "sapphire": 2, "emerald": 2, "ruby": 2, "onyx": 1, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "TAKE_THREE_GEMS", "player": "p1", "gems": ["diamond", "sapphire", "emerald"] },
+      "then": {
+        "state_subset": {
+          "phase": "DISCARD_TOKENS",
+          "current_player_index": 0,
+          "players": {
+            "p1": { "tokens": { "diamond": 3, "sapphire": 3, "emerald": 3, "ruby": 2, "onyx": 1, "gold": 0 } }
+          }
+        }
+      }
+    },
+    {
+      "id": "discard-tokens-down-to-ten-advances-turn",
+      "description": "Discarding 2 tokens from 12 returns them to bank and ends turn",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 5,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "DISCARD_TOKENS",
+        "bank": { "diamond": 3, "sapphire": 3, "emerald": 3, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": [], "2": [], "3": [] },
+        "market": { "1": ["t1_01"], "2": ["t2_01"], "3": ["t3_01"] },
+        "nobles": ["noble_01"],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 3, "sapphire": 3, "emerald": 3, "ruby": 2, "onyx": 1, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "DISCARD_TOKENS", "player": "p1", "tokens": { "ruby": 1, "onyx": 1 } },
+      "then": {
+        "state_subset": {
+          "phase": "MAIN_ACTION",
+          "current_player_index": 1,
+          "bank": { "ruby": 5, "onyx": 5 },
+          "players": {
+            "p1": { "tokens": { "ruby": 1, "onyx": 0 } }
+          }
+        },
+        "events_contain": [
+          { "type": "TOKENS_DISCARDED", "visibility": "public", "payload": { "player": "p1", "tokens": { "ruby": 1, "onyx": 1 } } }
+        ]
+      }
+    },
+    {
+      "id": "take-two-distinct-when-only-two-colors-in-bank",
+      "description": "When bank has only 2 gem colors available, TAKE_THREE_GEMS accepts exactly 2 distinct gems",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 10,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 1, "sapphire": 0, "emerald": 2, "ruby": 0, "onyx": 0, "gold": 5 },
+        "decks": { "1": [], "2": [], "3": [] },
+        "market": { "1": ["t1_01"], "2": ["t2_01"], "3": ["t3_01"] },
+        "nobles": ["noble_01"],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "TAKE_THREE_GEMS", "player": "p1", "gems": ["diamond", "emerald"] },
+      "then": {
+        "state_subset": {
+          "current_player_index": 1,
+          "bank": { "diamond": 0, "emerald": 1 },
+          "players": { "p1": { "tokens": { "diamond": 1, "emerald": 1 } } }
+        }
+      }
+    }
+  ]
+}

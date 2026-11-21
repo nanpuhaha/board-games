@@ -1,0 +1,129 @@
+{
+  "game": "splendor",
+  "suite": "reserve-and-visibility",
+  "description": "Market & blind deck reservations, gold gain, 3-card reserve limit, and hidden card masking",
+  "cases": [
+    {
+      "id": "reserve-from-market-gains-gold-and-refills",
+      "description": "Reserving a market card moves it to reserved, grants 1 gold, and reveals replacement card",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 1,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": ["t1_05"], "2": ["t2_05"], "3": ["t3_05"] },
+        "market": { "1": ["t1_01", "t1_02"], "2": ["t2_01"], "3": ["t3_01"] },
+        "nobles": ["noble_01"],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "RESERVE_CARD", "player": "p1", "source": "market", "card_id": "t1_01" },
+      "then": {
+        "state_subset": {
+          "bank": { "gold": 4 },
+          "market": { "1": ["t1_02", "t1_05"] },
+          "players": {
+            "p1": {
+              "tokens": { "gold": 1 },
+              "reserved": [{ "card_id": "t1_01", "tier": 1, "face_down": false }]
+            }
+          }
+        },
+        "events_contain": [
+          { "type": "CARD_RESERVED", "visibility": "public", "payload": { "player": "p1", "source": "market", "card_id": "t1_01", "gold_gained": 1 } },
+          { "type": "CARD_REVEALED_TO_MARKET", "visibility": "public", "payload": { "tier": 1, "card_id": "t1_05" } }
+        ]
+      }
+    },
+    {
+      "id": "blind-reserve-from-deck-emits-private-event-and-masks-opponent-view",
+      "description": "Blind deck reserve emits private BLIND_CARD_RESERVED to p1 and hides card_id from p2 view",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 1,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 0 },
+        "decks": { "1": ["t1_05"], "2": ["t2_05", "t2_06"], "3": [] },
+        "market": { "1": ["t1_01"], "2": ["t2_01"], "3": ["t3_01"] },
+        "nobles": ["noble_01"],
+        "players": {
+          "p1": { "id": "p1", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "RESERVE_CARD", "player": "p1", "source": "deck", "tier": 2 },
+      "view_as": "p2",
+      "then": {
+        "state_subset": {
+          "players": {
+            "p1": {
+              "tokens": { "gold": 0 },
+              "reserved": [{ "card_id": "t2_05", "tier": 2, "face_down": true }]
+            }
+          }
+        },
+        "events_contain": [
+          { "type": "CARD_RESERVED", "visibility": "public", "payload": { "player": "p1", "source": "deck", "tier": 2, "gold_gained": 0 } },
+          { "type": "BLIND_CARD_RESERVED", "visibility": "private", "recipients": ["p1"], "payload": { "player": "p1", "tier": 2, "card_id": "t2_05" } }
+        ],
+        "view_absent_keys": ["decks"],
+        "view_subset": {
+          "deck_counts": { "1": 1, "2": 1, "3": 0 },
+          "players": {
+            "p1": {
+              "reserved": [{ "hidden": true, "tier": 2, "face_down": true }]
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "reserve-limit-enforced",
+      "description": "Attempting to reserve a 4th card raises RESERVE_LIMIT_REACHED",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 4,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 2 },
+        "decks": { "1": ["t1_05"], "2": [], "3": [] },
+        "market": { "1": ["t1_01"], "2": ["t2_01"], "3": ["t3_01"] },
+        "nobles": ["noble_01"],
+        "players": {
+          "p1": {
+            "id": "p1",
+            "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 3 },
+            "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 },
+            "purchased": [],
+            "reserved": [
+              { "card_id": "t1_02", "tier": 1, "face_down": false },
+              { "card_id": "t1_03", "tier": 1, "face_down": false },
+              { "card_id": "t1_04", "tier": 1, "face_down": true }
+            ],
+            "nobles": [],
+            "points": 0
+          },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "RESERVE_CARD", "player": "p1", "source": "market", "card_id": "t1_01" },
+      "then": { "error": "RESERVE_LIMIT_REACHED" }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "gems": ["diamond", "sapphire", "emerald", "ruby", "onyx"],
+  "wild": "gold",
+  "max_tokens_per_player": 10,
+  "max_reserved_cards": 3,
+  "market_size_per_tier": 4,
+  "take_two_min_bank": 4,
+  "by_player_count": {
+    "2": { "gem_tokens_each": 4, "gold_tokens": 5, "nobles_count": 3 },
+    "3": { "gem_tokens_each": 5, "gold_tokens": 5, "nobles_count": 4 },
+    "4": { "gem_tokens_each": 7, "gold_tokens": 5, "nobles_count": 5 }
+  }
+}

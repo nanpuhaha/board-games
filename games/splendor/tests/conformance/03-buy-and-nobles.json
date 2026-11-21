@@ -1,0 +1,137 @@
+{
+  "game": "splendor",
+  "suite": "buy-and-nobles",
+  "description": "Card buying with bonus discounts & gold wilds, auto-claiming 1 noble, and choosing among 2+ nobles",
+  "cases": [
+    {
+      "id": "buy-card-with-bonus-discount-and-gold-wild",
+      "description": "Buying t1_08 (cost emerald:4, bonus diamond, 1 pt) with 2 emerald bonus, 1 emerald token, and 1 gold token",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 5,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 3, "ruby": 4, "onyx": 4, "gold": 4 },
+        "decks": { "1": ["t1_09"], "2": [], "3": [] },
+        "market": { "1": ["t1_08"], "2": ["t2_01"], "3": ["t3_01"] },
+        "nobles": ["noble_01"],
+        "players": {
+          "p1": {
+            "id": "p1",
+            "tokens": { "diamond": 0, "sapphire": 0, "emerald": 1, "ruby": 0, "onyx": 0, "gold": 1 },
+            "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 2, "ruby": 0, "onyx": 0 },
+            "purchased": ["t1_17", "t1_18"],
+            "reserved": [],
+            "nobles": [],
+            "points": 0
+          },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "BUY_CARD", "player": "p1", "source": "market", "card_id": "t1_08" },
+      "then": {
+        "state_subset": {
+          "bank": { "emerald": 4, "gold": 5 },
+          "market": { "1": ["t1_09"] },
+          "players": {
+            "p1": {
+              "tokens": { "emerald": 0, "gold": 0 },
+              "bonuses": { "diamond": 1, "emerald": 2 },
+              "points": 1
+            }
+          }
+        },
+        "events_contain": [
+          { "type": "CARD_PURCHASED", "visibility": "public", "payload": { "player": "p1", "card_id": "t1_08", "paid": { "emerald": 1, "gold": 1 }, "points_gained": 1 } }
+        ]
+      }
+    },
+    {
+      "id": "buy-card-triggers-choose-noble-when-two-eligible",
+      "description": "When purchasing a card makes player eligible for 2 nobles simultaneously, phase transitions to CHOOSE_NOBLE",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 12,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "MAIN_ACTION",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": [], "2": [], "3": [] },
+        "market": { "1": ["t1_05"], "2": [], "3": [] },
+        "nobles": ["noble_01", "noble_02"],
+        "players": {
+          "p1": {
+            "id": "p1",
+            "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 },
+            "bonuses": { "diamond": 3, "sapphire": 4, "emerald": 0, "ruby": 0, "onyx": 4 },
+            "purchased": [],
+            "reserved": [],
+            "nobles": [],
+            "points": 5
+          },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": [],
+        "outcome": null
+      },
+      "when": { "type": "BUY_CARD", "player": "p1", "source": "market", "card_id": "t1_05" },
+      "then": {
+        "state_subset": {
+          "phase": "CHOOSE_NOBLE",
+          "current_player_index": 0,
+          "pending_nobles": ["noble_01", "noble_02"]
+        }
+      }
+    },
+    {
+      "id": "claim-noble-grants-only-one-noble-per-turn",
+      "description": "CLAIM_NOBLE grants +3 points, removes chosen noble, leaves the other noble on board, and ends turn",
+      "given": {
+        "config": { "target_points": 15 },
+        "turn_number": 12,
+        "turn_order": ["p1", "p2"],
+        "current_player_index": 0,
+        "phase": "CHOOSE_NOBLE",
+        "bank": { "diamond": 4, "sapphire": 4, "emerald": 4, "ruby": 4, "onyx": 4, "gold": 5 },
+        "decks": { "1": [], "2": [], "3": [] },
+        "market": { "1": [], "2": [], "3": [] },
+        "nobles": ["noble_01", "noble_02"],
+        "players": {
+          "p1": {
+            "id": "p1",
+            "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 },
+            "bonuses": { "diamond": 4, "sapphire": 4, "emerald": 0, "ruby": 0, "onyx": 4 },
+            "purchased": ["t1_05"],
+            "reserved": [],
+            "nobles": [],
+            "points": 5
+          },
+          "p2": { "id": "p2", "tokens": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0, "gold": 0 }, "bonuses": { "diamond": 0, "sapphire": 0, "emerald": 0, "ruby": 0, "onyx": 0 }, "purchased": [], "reserved": [], "nobles": [], "points": 0 }
+        },
+        "final_round": false,
+        "pending_nobles": ["noble_01", "noble_02"],
+        "outcome": null
+      },
+      "when": { "type": "CLAIM_NOBLE", "player": "p1", "noble_id": "noble_02" },
+      "then": {
+        "state_subset": {
+          "phase": "MAIN_ACTION",
+          "current_player_index": 1,
+          "nobles": ["noble_01"],
+          "pending_nobles": [],
+          "players": {
+            "p1": { "nobles": ["noble_02"], "points": 8 }
+          }
+        },
+        "events_contain": [
+          { "type": "NOBLE_VISITED", "visibility": "public", "payload": { "player": "p1", "noble_id": "noble_02", "points_gained": 3 } }
+        ]
+      }
+    }
+  ]
+}
